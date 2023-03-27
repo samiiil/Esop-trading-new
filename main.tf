@@ -18,8 +18,8 @@ resource "tls_private_key" "rsa" {
   rsa_bits  = 4096
 }
 
-resource "aws_key_pair" "samiksha-gurukul" {
-  key_name   = "samiksha-gurukul"
+resource "aws_key_pair" "samiksha-gurukul-key" {
+  key_name   = "samiksha-gurukul-key"
   public_key = tls_private_key.rsa.public_key_openssh
 }
 
