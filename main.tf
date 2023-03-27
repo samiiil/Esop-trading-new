@@ -109,7 +109,6 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "default" {
 
 terraform {
   backend "s3" {
-
     bucket         = "gurukul-samiksha"
     key            = "terraform.tfstate"
     region         = "us-east-1"
