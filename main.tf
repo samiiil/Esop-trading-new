@@ -30,7 +30,7 @@ resource "local_file" "samiksha-gurukul" {
 resource "aws_instance" "app_server" {
   ami           = "ami-00c39f71452c08778"
   instance_type = "t2.micro"
-  key_name      = "samiksha-gurukul"
+  key_name      = "samiksha-gurukul-key"
   tags = {
     Name = "Samiksha_EC2"
   }
@@ -104,8 +104,6 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "default" {
     }
   }
 }
-
-
 
 terraform {
   backend "s3" {
