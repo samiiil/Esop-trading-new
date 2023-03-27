@@ -20,6 +20,6 @@ jobs:
       - name: Test directory
         run: ls
       - name: Test
-        run: ./gradlew test
+        run: cd esop_trading && ./gradlew test
 
 
