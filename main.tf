@@ -87,19 +87,8 @@ resource "aws_subnet" "gurukul_samiksha" {
 }
 resource "aws_s3_bucket" "gurukul-samiksha" {
   bucket = "gurukul-samiksha"
-
-
-  lifecycle {
-    prevent_destroy = true
-  }
 }
-resource "aws_s3_bucket_public_access_block" "public_access" {
-  bucket                  = aws_s3_bucket.gurukul-samiksha.id
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
-}
+
 resource "aws_s3_bucket_versioning" "enabled" {
   bucket = aws_s3_bucket.gurukul-samiksha.id
   versioning_configuration {
@@ -122,12 +111,9 @@ terraform {
   backend "s3" {
 
     bucket         = "gurukul-samiksha"
-    key            = "global/s3/terraform.tfstate"
+    key            = "s3/terraform.tfstate"
     region         = "us-east-1"
 
   }
 }
-output "s3_bucket_arn" {
-  value       = aws_s3_bucket.gurukul-samiksha.arn
-  description = "The ARN of the S3 bucket"
-}
+
