@@ -17,8 +17,9 @@ jobs:
         with:
           distribution: corretto
           java-version: 17
+      - name: Test directory
+        run: ls
       - name: Test
         run: ./gradlew test
-      - name: Test directory
-        run : pwd
+
 
