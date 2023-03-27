@@ -17,8 +17,6 @@ jobs:
         with:
           distribution: corretto
           java-version: 17
-      - name: Test directory
-        run: ls
       - name: Test
         run: cd esop_trading && ./gradlew test
 
@@ -40,5 +38,40 @@ jobs:
 
          name: esop-trading-1.0
          path: cd esop_trading && build/libs/esop_0.1-all.jar
+
+  terraform:
+    name: "Terraform"
+    env:
+      AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    runs-on: ubuntu-latest
+    environment: dev
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: "1.2.0"
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_wrapper: false
+
+      - name: Terraform Plan
+        run: terraform plan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -input=false
 
 
