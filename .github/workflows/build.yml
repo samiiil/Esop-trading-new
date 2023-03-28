@@ -83,7 +83,7 @@ jobs:
      - name: Download jar file
        uses: actions/download-artifact@v3
        with:
-          name: esop_trading-1.0
+          name: esop_trading-1.0.jar
 
      - name: Copy jar file to ec2 instance
        env:
