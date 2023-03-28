@@ -104,10 +104,10 @@ jobs:
          value=$(lsof -n -i :8080 | grep LISTEN | awk -F ' ' '{print $2}') && sudo kill -9 $value > /dev/null
          #            ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "lsof -i tcp:8080 | awk '/8080/{print $2}' | xargs kill"
          echo "kill pro"
-         scp -T -o StrictHostKeyChecking=no "esop-0.1-all.jar" ec2-user@$SSH_HOST:~
+         scp -T -o StrictHostKeyChecking=no "esop_trading-0.1-all.jar" ec2-user@$SSH_HOST:~
          echo "scp"
          ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "curl -s 'https://get.sdkman.io' | bash"
          echo "sdk"
          ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "sdk install java 17.0.6-amzn"
          echo "java"
-         ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "java -jar esop-trading-0.1-all.jar > /dev/null"
+         ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "java -jar esop_trading-0.1-all.jar > /dev/null"
