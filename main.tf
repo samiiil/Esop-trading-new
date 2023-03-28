@@ -27,13 +27,13 @@ resource "local_file" "samiksha-gurukul" {
   filename = "tfkey.pem"
 }
 resource "aws_instance" "app_server" {
-  ami           = "ami-00c39f71452c08778"
-  instance_type = "t2.micro"
+  ami                         = "ami-00c39f71452c08778"
+  instance_type               = "t2.micro"
   associate_public_ip_address = true
-  key_name      = "samiksha-gurukul-key"
+  key_name                    = "samiksha-gurukul-key"
   vpc_security_group_ids      = [aws_security_group.SG_allow.id]
   subnet_id                   = aws_subnet.gurukul_samiksha.id
-  tags = {
+  tags                        = {
     Name = "Samiksha_EC2"
   }
 }
@@ -83,7 +83,7 @@ resource "aws_security_group" "SG_allow" {
 resource "aws_subnet" "gurukul_samiksha" {
   vpc_id     = "vpc-019c09a1a0c5b4f6b"
   cidr_block = "10.0.0.144/28"
-  tags = {
+  tags       = {
     "Name" = "gurukul_samiksha"
   }
 }
@@ -109,10 +109,10 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "default" {
 
 terraform {
   backend "s3" {
-    bucket         = "gurukul-samiksha"
-    key            = "terraform.tfstate"
-    region         = "us-east-1"
-    encrypt        = true
+    bucket  = "gurukul-samiksha"
+    key     = "terraform.tfstate"
+    region  = "us-east-1"
+    encrypt = true
   }
 }
 
