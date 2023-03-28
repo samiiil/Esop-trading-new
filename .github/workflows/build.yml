@@ -12,11 +12,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Setup java
         uses: actions/setup-java@v3
         with:
           distribution: corretto
           java-version: 17
+
       - name: Test
         run: cd esop_trading && ./gradlew test
 
@@ -68,6 +70,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
       - name: Terraform Apply
         run: terraform apply -auto-approve -input=false
         env:

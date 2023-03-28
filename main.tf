@@ -13,7 +13,7 @@ provider "aws" {
 
 resource "aws_key_pair" "samiksha-gurukul-key" {
   key_name   = "samiksha-gurukul-key"
-  public_key = file("./key.pub"
+  public_key = file("./key.pub")
 }
 
 
