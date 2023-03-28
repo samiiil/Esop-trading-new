@@ -81,7 +81,7 @@ jobs:
          distribution: corretto
          java-version: 17
      - name: Download jar file
-       uses: actions/download-artifact@v3
+       uses: download-artifact@v3
        with:
           name: esop_trading-1.0.jar
 
