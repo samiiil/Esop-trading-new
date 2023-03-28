@@ -44,7 +44,7 @@ jobs:
         with:
 
          name: esop-trading-1.0
-         path: esop_trading/build/libs/esop_0.1-all.jar
+         path: esop_trading/build/libs/esop_trading-0.1-all.jar
 
   terraform:
     name: "Terraform Pipeline"
