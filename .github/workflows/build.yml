@@ -116,18 +116,21 @@ jobs:
           ssh -T -o StrictHostKeyChecking=no  ec2-user@$SSH_HOST
           echo "priv key"
           ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t '
-            pid=$(fuser 8080/tcp)
-            echo $pid
-            if [ $pid ]
+          pid=$(fuser 8080/tcp)
+          echo $pid
+          echo "$pid";
+          #!/bin/sh;
+          echo "script";
+          if [ $pid ]
             then
-            echo "kill"
-            fuser -k 8080/tcp
-            fi
-            echo "kill pro"
-            curl -s 'https://get.sdkman.io' | bash
-            echo "sdk"
-            source "/.sdkman/bin/sdkman-init.sh"
-            echo "source"
-            sdk install java 17.0.6-amzn
-            echo "java"
-            java -jar esop_trading-0.1-all.jar > /dev/null
+            echo "then"
+            sudo fuser -k -n tcp 8080  
+            echo "process killed"
+          fi
+          curl -s 'https://get.sdkman.io' | bash
+          echo "sdk"
+          source "/.sdkman/bin/sdkman-init.sh"
+          echo "source"
+          sdk install java 17.0.6-amzn
+          echo "java"
+          java -jar esop_trading-0.1-all.jar > /dev/null
