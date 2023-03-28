@@ -87,6 +87,7 @@ jobs:
        with:
          distribution: corretto
          java-version: 17
+
      - name: Download jar file
        uses: actions/download-artifact@v3
        with:
