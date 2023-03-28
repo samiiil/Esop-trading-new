@@ -37,7 +37,7 @@ jobs:
         with:
 
          name: esop-trading-1.0
-         path: cd esop_trading && build/libs/esop_0.1-all.jar
+         path: esop_trading/build/libs/esop_0.1-all.jar
 
   terraform:
     name: "Terraform Pipeline"
@@ -83,7 +83,7 @@ jobs:
      - name: Download jar file
        uses: actions/download-artifact@v3
        with:
-          name: esop_trading-1.0
+          name: esop-trading-1.0
 
      - name: Copy jar file to ec2 instance
        env:
