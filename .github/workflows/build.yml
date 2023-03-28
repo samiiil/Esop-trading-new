@@ -110,27 +110,52 @@ jobs:
          SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
          SSH_HOST: ${{ needs.terraform.outputs.host }}
        run: |
-          eval `ssh-agent`
-          echo "${SSH_PRIVATE_KEY}" | tr -d '\r' | ssh-add - > /dev/null
-          scp -T -o StrictHostKeyChecking=no "esop_trading-0.1-all.jar" ec2-user@$SSH_HOST:~
-          ssh -T -o StrictHostKeyChecking=no  ec2-user@$SSH_HOST
-          echo "priv key"
-          ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t
-          pid=$(fuser 8080/tcp)
-          echo $pid
-          echo "$pid";
-          #!/bin/sh;
-          echo "script";
-          if [ $pid ]
-            then
-            echo "then"
-            sudo fuser -k -n tcp 8080  
-            echo "process killed"
-          fi
-          curl -s 'https://get.sdkman.io' | bash
-          echo "sdk"
-          source "/.sdkman/bin/sdkman-init.sh"
-          echo "source"
-          sdk install java 17.0.6-amzn
-          echo "java"
-          java -jar esop_trading-0.1-all.jar > /dev/null
+         
+         
+         eval `ssh-agent`
+         echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+         ssh_host=$(cat public_ip.txt | tr -d '"');
+         scp -o StrictHostKeyChecking=no "esop_trading-0.1-all.jar" ec2-user@$SSH_HOST:~
+         ssh -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t 'sudo yum install java-17-amazon-corretto-headless -y;
+         echo "Installed java";
+         ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts;
+         echo "Host added";
+         pid=$(sudo fuser -v -n tcp 8080);
+         echo "$pid";
+         #!/bin/sh;
+         echo "script";
+         if [ $pid ]
+           then
+           echo "then"
+           sudo fuser -k -n tcp 8080  
+           echo "process killed"
+         fi
+         echo "Done with killing";
+         sudo nohup java -jar esop_trading-0.1-all.jar >/dev/null;
+         echo "Process Started"'
+         
+
+#         eval `ssh-agent`
+#          echo "${SSH_PRIVATE_KEY}" | tr -d '\r' | ssh-add - > /dev/null
+#          scp -T -o StrictHostKeyChecking=no "esop_trading-0.1-all.jar" ec2-user@$SSH_HOST:~
+#          ssh -T -o StrictHostKeyChecking=no  ec2-user@$SSH_HOST
+#          echo "priv key"
+#          ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t
+#          pid=$(fuser 8080/tcp)
+#          echo $pid
+#          echo "$pid";
+#          #!/bin/sh;
+#          echo "script";
+#          if [ $pid ]
+#            then
+#            echo "then"
+#            sudo fuser -k -n tcp 8080
+#            echo "process killed"
+#          fi
+#          curl -s 'https://get.sdkman.io' | bash
+#          echo "sdk"
+#          source "/.sdkman/bin/sdkman-init.sh"
+#          echo "source"
+#          sdk install java 17.0.6-amzn
+#          echo "java"
+#          java -jar esop_trading-0.1-all.jar > /dev/null
