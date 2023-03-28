@@ -70,7 +70,7 @@ jobs:
             name: "deploy"
             runs-on: ubuntu-latest
             needs:
-              - terraform
+              - Terraform Pipeline
               - build
               - test
             steps:
