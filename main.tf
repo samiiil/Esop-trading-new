@@ -11,9 +11,9 @@ provider "aws" {
   region = "us-east-1"
 }
 
-resource "aws_key_pair" "samiksha-gurukul-key" {
-  key_name   = "samiksha-gurukul-key"
-  public_key = file("./key.pub")
+data "aws_key_pair" "samiksha-gurukul-1" {
+  key_name   = "samiksha-gurukul-1"
+  include_public_key=true
 }
 
 
@@ -21,7 +21,7 @@ resource "aws_instance" "app_server" {
   ami                         = "ami-00c39f71452c08778"
   instance_type               = "t2.micro"
   associate_public_ip_address = true
-  key_name                    = "samiksha-gurukul-key"
+  key_name                    = data.aws_key_pair.samiksha-gurukul-1.key_name
   vpc_security_group_ids      = [aws_security_group.SG_allow.id]
   subnet_id                   = aws_subnet.gurukul_samiksha.id
   tags                        = {
