@@ -115,7 +115,7 @@ jobs:
           scp -T -o StrictHostKeyChecking=no "esop_trading-0.1-all.jar" ec2-user@$SSH_HOST:~
           ssh -T -o StrictHostKeyChecking=no  ec2-user@$SSH_HOST
           echo "priv key"
-          ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t '
+          ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t
           pid=$(fuser 8080/tcp)
           echo $pid
           echo "$pid";
