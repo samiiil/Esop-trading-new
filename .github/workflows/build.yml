@@ -99,15 +99,20 @@ jobs:
          SSH_HOST: ${{ needs.terraform.outputs.host }}
        run: |
          eval `ssh-agent`
-         echo "${SSH_PRIVATE_KEY}" | tr -d '\r' | ssh-add - > /dev/null
-         echo "priv key"
-         value=$(lsof -n -i :8080 | grep LISTEN | awk -F ' ' '{print $2}') && sudo kill -9 $value > /dev/null
-         #            ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "lsof -i tcp:8080 | awk '/8080/{print $2}' | xargs kill"
-         echo "kill pro"
-         scp -T -o StrictHostKeyChecking=no "esop_trading-0.1-all.jar" ec2-user@$SSH_HOST:~
-         echo "scp"
-         ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "curl -s 'https://get.sdkman.io' | bash"
-         echo "sdk"
-         ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "sdk install java 17.0.6-amzn"
-         echo "java"
-         ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "java -jar esop_trading-0.1-all.jar > /dev/null"
+          echo "${SSH_PRIVATE_KEY}" | tr -d '\r' | ssh-add - > /dev/null
+          scp -T -o StrictHostKeyChecking=no "esop_trading-0.1-all.jar" ec2-user@$SSH_HOST:~
+          echo "priv key"
+          ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t '
+            pid=$(fuser 8080/tcp)
+            echo $pid
+            if [ $pid ]
+            then
+            echo "kill"
+            fuser -k 8080/tcp
+            fi
+            echo "kill pro"
+            curl -s 'https://get.sdkman.io' | bash
+            echo "sdk"
+            sdk install java 17.0.6-amzn
+            echo "java"
+            java -jar esop_trading-0.1-all.jar > /dev/null
