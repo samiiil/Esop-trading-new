@@ -99,7 +99,7 @@ jobs:
          SSH_HOST: ${{ needs.terraform.outputs.host }}
        run: |
          eval `ssh-agent`
-          echo "${SSH_PRIVATE_KEY}" | tr -d '\r' | ssh-add - > /dev/null
+          echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
           scp -T -o StrictHostKeyChecking=no "esop_trading-0.1-all.jar" ec2-user@$SSH_HOST:~
           echo "priv key"
           ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t '
