@@ -7,46 +7,46 @@ on:
     branches: [ "terraform" ]
 
 jobs:
-#  test:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#
-#      - name: Setup java
-#        uses: actions/setup-java@v3
-#        with:
-#          distribution: corretto
-#          java-version: 17
-#
-#      - name: Test
-#        run: cd esop_trading && ./gradlew test
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-#  build:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#
-#      - name: Setup java
-#        uses: actions/setup-java@v3
-#        with:
-#          distribution: corretto
-#          java-version: 17
-#
-#      - name: Build
-#        run: cd esop_trading && ./gradlew build
-#
-#      - name: download jar file
-#        run: cd esop_trading && ./gradlew shadowJar
-#
-#
-#      - name: Copy jar file to artifacts
-#        uses: actions/upload-artifact@v3
-#        with:
-#
-#         name: esop-trading-1.0
-#         path: esop_trading/build/libs/esop_trading-0.1-all.jar
+      - name: Setup java
+        uses: actions/setup-java@v3
+        with:
+          distribution: corretto
+          java-version: 17
+
+      - name: Test
+        run: cd esop_trading && ./gradlew test
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup java
+        uses: actions/setup-java@v3
+        with:
+          distribution: corretto
+          java-version: 17
+
+      - name: Build
+        run: cd esop_trading && ./gradlew build
+
+      - name: download jar file
+        run: cd esop_trading && ./gradlew shadowJar
+
+
+      - name: Copy jar file to artifacts
+        uses: actions/upload-artifact@v3
+        with:
+
+         name: esop-trading-1.0
+         path: esop_trading/build/libs/esop_trading-0.1-all.jar
 
   terraform:
     outputs:
@@ -89,8 +89,8 @@ jobs:
     name: "deploy"
     runs-on: ubuntu-latest
     needs:
-#      - test
-#      - build
+      - test
+      - build
       - terraform
 
     steps:
@@ -100,10 +100,10 @@ jobs:
          distribution: corretto
          java-version: 17
 
-#     - name: Download jar file
-#       uses: actions/download-artifact@v3
-#       with:
-#          name: esop-trading-1.0
+     - name: Download jar file
+       uses: actions/download-artifact@v3
+       with:
+          name: esop-trading-1.0
 
      - name: Copy jar file to ec2 instance
        env:
