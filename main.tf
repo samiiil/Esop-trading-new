@@ -7,25 +7,16 @@ terraform {
   }
   required_version = ">= 1.2.0"
 }
-
 provider "aws" {
   region = "us-east-1"
 }
 
-resource "tls_private_key" "rsa" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
 resource "aws_key_pair" "samiksha-gurukul-key" {
   key_name   = "samiksha-gurukul-key"
-  public_key = tls_private_key.rsa.public_key_openssh
+  public_key = file("./key.pub"
 }
 
-resource "local_file" "samiksha-gurukul" {
-  content  = tls_private_key.rsa.private_key_pem
-  filename = "tfkey.pem"
-}
+
 resource "aws_instance" "app_server" {
   ami                         = "ami-00c39f71452c08778"
   instance_type               = "t2.micro"
@@ -44,41 +35,44 @@ resource "aws_security_group" "SG_allow" {
   name        = "SG_allow"
   description = "Security Group"
   vpc_id      = "vpc-019c09a1a0c5b4f6b"
-  #HTTPS
-  ingress {
-    description      = "HTTPS"
-    from_port        = 443
-    to_port          = 443
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-  ingress {
-    description      = "HTTP"
-    from_port        = 80
-    to_port          = 80
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-  ingress {
-    description      = "SSH"
-    from_port        = 22
-    to_port          = 22
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-  egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-  tags = {
-    Name = "SG_allow"
-  }
+  egress = [
+    {
+      cidr_blocks      = ["0.0.0.0/0", ]
+      description      = ""
+      from_port        = 0
+      ipv6_cidr_blocks = []
+      prefix_list_ids  = []
+      protocol         = "-1"
+      security_groups  = []
+      self             = false
+      to_port          = 0
+    }
+  ]
+
+  ingress = [
+    {
+      cidr_blocks      = ["0.0.0.0/0", ]
+      description      = ""
+      from_port        = 22
+      ipv6_cidr_blocks = []
+      prefix_list_ids  = []
+      protocol         = "tcp"
+      security_groups  = []
+      self             = false
+      to_port          = 22
+    },
+    {
+      cidr_blocks      = ["0.0.0.0/0", ]
+      description      = ""
+      from_port        = 8080
+      ipv6_cidr_blocks = []
+      prefix_list_ids  = []
+      protocol         = "tcp"
+      security_groups  = []
+      self             = false
+      to_port          = 8080
+    }
+  ]
 }
 resource "aws_subnet" "gurukul_samiksha" {
   vpc_id     = "vpc-019c09a1a0c5b4f6b"
