@@ -2,51 +2,11 @@ name: Test Build Deploy
 
 on:
   push:
-    branches: [ "terraform" ]
+    branches: [ "new_terraform" ]
   pull_request:
-    branches: [ "terraform" ]
+    branches: [ "new_terraform" ]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Setup java
-        uses: actions/setup-java@v3
-        with:
-          distribution: corretto
-          java-version: 17
-
-      - name: Test
-        run: cd esop_trading && ./gradlew test
-
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Setup java
-        uses: actions/setup-java@v3
-        with:
-          distribution: corretto
-          java-version: 17
-
-      - name: Build
-        run: cd esop_trading && ./gradlew build
-
-      - name: download jar file
-        run: cd esop_trading && ./gradlew shadowJar
-
-
-      - name: Copy jar file to artifacts
-        uses: actions/upload-artifact@v3
-        with:
-
-         name: esop-trading-1.0
-         path: esop_trading/build/libs/esop_trading-0.1-all.jar
 
   terraform:
     outputs:
@@ -83,79 +43,3 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-
-  deploy:
-    name: "deploy"
-    runs-on: ubuntu-latest
-    needs:
-      - test
-      - build
-      - terraform
-
-    steps:
-     - name: Setup java
-       uses: actions/setup-java@v3
-       with:
-         distribution: corretto
-         java-version: 17
-
-     - name: Download jar file
-       uses: actions/download-artifact@v3
-       with:
-          name: esop-trading-1.0
-
-     - name: Copy jar file to ec2 instance
-       env:
-         SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
-         SSH_HOST: ${{ needs.terraform.outputs.host }}
-       run: |
-         
-         
-         eval `ssh-agent`
-         echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-         ssh_host=$(cat public_ip.txt | tr -d '"');
-         scp -o StrictHostKeyChecking=no "esop_trading-0.1-all.jar" ec2-user@$SSH_HOST:~
-         ssh -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t 'sudo yum install java-17-amazon-corretto-headless -y;
-         echo "Installed java";
-         ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts;
-         echo "Host added";
-         pid=$(sudo fuser -v -n tcp 8080);
-         echo "$pid";
-         #!/bin/sh;
-         echo "script";
-         if [ $pid ]
-           then
-           echo "then"
-           sudo fuser -k -n tcp 8080  
-           echo "process killed"
-         fi
-         echo "Done with killing";
-         sudo nohup java -jar esop_trading-0.1-all.jar >/dev/null;
-         echo "Process Started"'
-         
-
-#         eval `ssh-agent`
-#          echo "${SSH_PRIVATE_KEY}" | tr -d '\r' | ssh-add - > /dev/null
-#          scp -T -o StrictHostKeyChecking=no "esop_trading-0.1-all.jar" ec2-user@$SSH_HOST:~
-#          ssh -T -o StrictHostKeyChecking=no  ec2-user@$SSH_HOST
-#          echo "priv key"
-#          ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t
-#          pid=$(fuser 8080/tcp)
-#          echo $pid
-#          echo "$pid";
-#          #!/bin/sh;
-#          echo "script";
-#          if [ $pid ]
-#            then
-#            echo "then"
-#            sudo fuser -k -n tcp 8080
-#            echo "process killed"
-#          fi
-#          curl -s 'https://get.sdkman.io' | bash
-#          echo "sdk"
-#          source "/.sdkman/bin/sdkman-init.sh"
-#          echo "source"
-#          sdk install java 17.0.6-amzn
-#          echo "java"
-#          java -jar esop_trading-0.1-all.jar > /dev/null
